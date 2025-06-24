@@ -91,9 +91,10 @@ function PlayTrackScreen({route})
             </View>
             <View style={styles.detailsContainer}>
                 <View style={styles.infoText}>
-                    <Text style={styles.songsName} >{showTitle} </Text>
-                    {/* <Text style={styles.songArtist}>{tracks.artist}</Text> */}
-                    <MarqueeText style={styles.songArtist} speed={1} marqueeOnStart={true} loop={true} delay={1000}>{tracks.artist}</MarqueeText>
+                    {/* <Text style={styles.songsName} >{showTitle} </Text> */}
+                    <MarqueeText style={styles.songsName} speed={0.5} marqueeOnStart={true} loop={true} delay={2000}>{showTitle}</MarqueeText>
+                    <Text style={styles.songArtist}>{tracks.artist}</Text>
+                    
                 </View>
                 <View style={styles.iconContainer}>
                     <Ionicon name="heart-outline" size={30} color="#ffffff" />
