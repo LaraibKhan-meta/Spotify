@@ -90,12 +90,10 @@ function AlbumScreen({ navigation }) {
               
                 <TopHeader style={topHeaderVisibleStyles} textStyle={textVisibleStyles}>1Remastered</TopHeader>
                 
-                <Animated.ScrollView onScroll={scrollHandler} stickyHeaderIndices={[0]} scrollEventThrottle={16} showsVerticalScrollIndicator={false} style={{ flex: 1,zIndex:0,position:'relative' }}  >
+                <Animated.ScrollView onScroll={scrollHandler} stickyHeaderIndices={[0]} scrollEventThrottle={16} showsVerticalScrollIndicator={false} style={{ flex: 1 }}   >
                      <View style={styles.fixedPlayIcon}>
                         <Ionicon name="pause-circle-sharp" size={56} color="#1DB954" style={{zIndex:999}}/>
                     </View>
-                    <View style={styles.mainContainer}>
-
                         <Animated.View style={[styles.imageContainer, headerStyles]}>
                             <Animated.Image source={images.AlbumImage} style={imageStyle} />
                         </Animated.View>
@@ -126,7 +124,7 @@ function AlbumScreen({ navigation }) {
                         <View style={styles.listSongs}>
                             <FlatList data={tracks} keyExtractor={item => item.id} renderItem={renderPlaylist} />
                         </View>  
-                    </View>
+             
                     
                 </Animated.ScrollView>
                 <BottomPlayer />
@@ -203,20 +201,18 @@ const styles = StyleSheet.create({
     },
     listSongs: {
         paddingTop: 20,
-        flex: 1
+        flex: 1,
     },
     linearGradient: {
         flex: 1,
     },
     fixedPlayIcon: {
-    top: 450,
+    position: 'relative',
+    top: 430,
     right: 0,
-    left: 330,
-    bottom:100,
-    zIndex: 9999,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-end',
-
+    left: 340,
+    bottom: 0,
+    zIndex: 2000,
 },
+
 });

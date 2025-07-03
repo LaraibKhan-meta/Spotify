@@ -27,7 +27,7 @@ function LoginScreen({navigation})
             </View>
             <View style={styles.btnContainer}>
                 <SocialButton mode="Signup" onPress={navigateSignupScreen}>Sign up free</SocialButton>
-                <SocialButton image={images.Google}>Continue with Google</SocialButton>
+                <SocialButton image={images.Google} onPress={handleLogin}>Continue with Google</SocialButton>
                 <SocialButton image={images.facebook}>Continue with facebook</SocialButton>
                 <SocialButton image={images.ios}>Continue with Apple</SocialButton>
                 <SocialButton mode="Login" onPress={handleLogin}>Login</SocialButton>
@@ -48,10 +48,11 @@ const styles = StyleSheet.create({
         width:'100%',
     },
     textContainer:{
+        flex:1,
         flexDirection:'column',
         justifyContent:'center',
         alignItems:'center',
-        marginTop:10
+        marginBottom:-30
     },
     text:{
         color:'#ffffff',
@@ -59,6 +60,7 @@ const styles = StyleSheet.create({
         fontWeight:'600'
     },
     btnContainer:{
+        flex:2,
         padding:40,
     },
    

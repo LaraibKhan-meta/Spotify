@@ -14,14 +14,18 @@ export default TopHeader;
 
 const styles = StyleSheet.create({
     topHeader:{
-        flexDirection:'row',
-        alignItems:'center',
-        padding:20,
-        paddingTop:20,
-        width:'100%',
-        justifyContent:'flex-start',
-        backgroundColor:'#641D17',
-        zIndex:0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 20,
+        paddingTop: 20,
+        width: '100%',
+        justifyContent: 'flex-start',
+        backgroundColor: '#641D17',
+        position: 'relative',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
     },
     text:{
         color:'#ffffff',
