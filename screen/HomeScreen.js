@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { EditorPicks, RecentlyPlayed } from "../model/DummyData";
@@ -10,6 +10,7 @@ import BottomPlayer from "../component/BottomPlayer";
 import { useSelector } from "react-redux";
 import { fetchRecentlyPlayed } from "../until/auth";
 import { useEffect, useState } from "react";
+import responsive from "../until/responsive";
 
 function HomeScreen({ navigation }) {
     const [recentTracks, setRecentTracks] = useState([]);
@@ -52,44 +53,46 @@ function HomeScreen({ navigation }) {
     }
     return (
         <ThemeColor>
-            <View style={styles.mainContainer}>
-                <View style={styles.topHeader}>
-                    <Text style={styles.recentlyText}>Recently played</Text>
-                    <View style={styles.topIconContainer}>
-                        <Ionicons name="notifications-outline" size={22} color="#ffffff" />
-                        <MaterialIcons name="history" size={22} color="#ffffff" />
-                        <Ionicons name="settings-outline" size={22} color="#ffffff" />
+            <ScrollView>
+                <View style={styles.mainContainer}>
+                    <View style={styles.topHeader}>
+                        <Text style={styles.recentlyText}>Recently played</Text>
+                        <View style={styles.topIconContainer}>
+                            <Ionicons name="notifications-outline" size={22} color="#ffffff" />
+                            <MaterialIcons name="history" size={22} color="#ffffff" />
+                            <Ionicons name="settings-outline" size={22} color="#ffffff" />
+                        </View>
+                    </View>
+                    <View style={styles.mainListContainer}>
+                        <FlatList data={recentTracks} horizontal keyExtractor={(item) => item.id} renderItem={renderRecentlyPlayedList} showsHorizontalScrollIndicator={false} />
+                    </View>
+                    <View style={styles.reviewConatiner}>
+                        <Image source={require('../src/assets/images/review.png')} style={styles.imageReview} />
+                        <View style={styles.textReviewContainer}>
+                            <Text style={styles.textHash}>#SPOTIFYWRAPPED</Text>
+                            <Text style={styles.reviewText}>Your 2021 in review</Text>
+                        </View>
+                    </View>
+                    <View style={styles.topSongsContainer}>
+                        <View style={styles.songsItemContainer}>
+                            <Image source={require('../src/assets/Artist/topSong.jpg')} style={styles.songsItemImage} />
+                            <Text style={styles.songsItemText}>Your Top Songs 2021</Text>
+                        </View>
+                        <View style={styles.songsItemContainer}>
+                            <Image source={require('../src/assets/Artist/artist.jpg')} style={styles.songsItemImage} />
+                            <Text style={styles.songsItemText}>Your Artists Revealed</Text>
+                        </View>
+                    </View>
+                    <View>
+                        <View style={styles.editorsPickContainer}>
+                            <Text style={styles.editorsText}>Editor's picks</Text>
+                        </View>
+                        <View style={styles.editorSongsContainer}>
+                            <FlatList data={EditorPicks} horizontal keyExtractor={(item) => item.id} renderItem={renderEditorPickList} showsHorizontalScrollIndicator={false} />
+                        </View>
                     </View>
                 </View>
-                <View style={styles.mainListContainer}>
-                    <FlatList data={recentTracks} horizontal keyExtractor={(item) => item.id} renderItem={renderRecentlyPlayedList} showsHorizontalScrollIndicator={false} />
-                </View>
-                <View style={styles.reviewConatiner}>
-                    <Image source={require('../src/assets/images/review.png')} style={styles.imageReview} />
-                    <View style={styles.textReviewContainer}>
-                        <Text style={styles.textHash}>#SPOTIFYWRAPPED</Text>
-                        <Text style={styles.reviewText}>Your 2021 in review</Text>
-                    </View>
-                </View>
-                <View style={styles.topSongsContainer}>
-                    <View style={styles.songsItemContainer}>
-                        <Image source={require('../src/assets/Artist/topSong.jpg')} style={styles.songsItemImage} />
-                        <Text style={styles.songsItemText}>Your Top Songs 2021</Text>
-                    </View>
-                    <View style={styles.songsItemContainer}>
-                        <Image source={require('../src/assets/Artist/artist.jpg')} style={styles.songsItemImage} />
-                        <Text style={styles.songsItemText}>Your Artists Revealed</Text>
-                    </View>
-                </View>
-                <View>
-                    <View style={styles.editorsPickContainer}>
-                        <Text style={styles.editorsText}>Editor's picks</Text>
-                    </View>
-                    <View style={styles.editorSongsContainer}>
-                        <FlatList data={EditorPicks} horizontal keyExtractor={(item) => item.id} renderItem={renderEditorPickList} showsHorizontalScrollIndicator={false} />
-                    </View>
-                </View>
-            </View>
+            </ScrollView>
             <BottomPlayer onPress={renderToPlayerScreen} />
         </ThemeColor>
     )
@@ -138,8 +141,8 @@ const styles = StyleSheet.create({
         gap: 10
     },
     imageReview: {
-        width: 58,
-        height: 58
+        width: responsive.width(58),
+        height: responsive.height(58)
     },
     textReviewContainer: {
         flexDirection: 'column',
@@ -147,12 +150,12 @@ const styles = StyleSheet.create({
 
     },
     reviewText: {
-        fontSize: 26,
+        fontSize: responsive.fontSize(26),
         color: '#ffffff',
         fontWeight: 500
     },
     textHash: {
-        fontSize: 10,
+        fontSize: responsive.fontSize(10),
         color: Colors.secondary400,
     },
     topSongsContainer: {
@@ -169,20 +172,20 @@ const styles = StyleSheet.create({
         gap: 5
     },
     songsItemImage: {
-        width: 153,
-        height: 155
+        width: responsive.width(153),
+        height: responsive.height(155)
     },
     songsItemText: {
         color: '#ffffff',
         fontWeight: 500,
-        fontSize: 13
+        fontSize: responsive.fontSize(13)
     },
     editorsPickContainer: {
         paddingHorizontal: 10,
         marginTop: 18
     },
     editorsText: {
-        fontSize: 24,
+        fontSize: responsive.fontSize(24),
         color: '#ffffff',
         fontWeight: 500
     },

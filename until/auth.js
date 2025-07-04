@@ -40,7 +40,7 @@ export const fetchRecentlyPlayed = async ({accessToken}) => {
       },
     );
 
-    const track = response.data.items.map(item => ({
+    const allTracks = response.data.items.map(item => ({
       id: item.track.id,
       name: item.track.name,
       image: item.track.album.images[1]?.url,
@@ -51,7 +51,7 @@ export const fetchRecentlyPlayed = async ({accessToken}) => {
    
 
       const uniqueTracksMap = new Map();
-      track.forEach(track => {
+      allTracks.forEach(track => {
         if (!uniqueTracksMap.has(track.id)) {
           uniqueTracksMap.set(track.id, track);
         }

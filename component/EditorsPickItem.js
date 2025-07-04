@@ -1,5 +1,6 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { images } from "../constant/Images";
+import responsive from "../until/responsive";
 
 function EditorsPickItem({id,name,image})
 {
@@ -17,14 +18,14 @@ export default EditorsPickItem;
 
 const styles = StyleSheet.create({
     image:{
-        width:154,
-        height:154
+        width:responsive.width(154),
+        height:responsive.height(154)
     },
     text:{
-        fontSize:12,
+        fontSize:responsive.fontSize(12),
         color:'#ffffff',
         fontWeight:300,
-        width:154
+        width:responsive.width(154)
     },
     mainContainer:{
         flexDirection:'column',
