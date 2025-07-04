@@ -17,15 +17,15 @@ const config = {
 
 export const spotifyLogin = async ({navigation, dispatch}) => {
   try {
-    console.error('Trying to login with Spotify...');
+    console.log('Trying to login with Spotify...');
     const result = await authorize(config);
-    console.error('Access Token:', result.accessToken);
+    console.log('Access Token:', result.accessToken);
     dispatch(setAccessToken(result.accessToken));
     navigation.navigate('BottomTabs', {screen: 'Home'});
 
     return result;
   } catch (error) {
-    console.error('Login error', error);
+    console.log('Login error', error);
   }
 };
 
@@ -48,8 +48,17 @@ export const fetchRecentlyPlayed = async ({accessToken}) => {
       height: item.track.album.images[1]?.height,
     }));
 
-    console.log('Recently Played Tracks:', response.data);
-    return track;
+   
+
+      const uniqueTracksMap = new Map();
+      track.forEach(track => {
+        if (!uniqueTracksMap.has(track.id)) {
+          uniqueTracksMap.set(track.id, track);
+        }
+      });
+      const uniqueTracks = Array.from(uniqueTracksMap.values());
+       console.log('Recently Played Tracks:', response.data);
+    return  uniqueTracks;
   } catch (error) {
     if (error.response) {
       console.error(

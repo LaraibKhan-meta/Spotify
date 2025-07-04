@@ -1,4 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import responsive from "../until/responsive";
 
 function RecentItem({id,name,image,width,height,onPress})
 {
@@ -16,8 +17,8 @@ export default RecentItem;
 
 const styles = StyleSheet.create({
     image:{
-        width:105,
-        height:105
+        width:responsive.width(105),
+        height:responsive.height(105)
     },
     mainContainer:{
         flexDirection:'column',
@@ -25,8 +26,10 @@ const styles = StyleSheet.create({
         gap:5
     },
     text:{
+        width:responsive.width(97),
+        height:responsive.height(24),
         color:'#ffffff',
-        fontSize:12,
+        fontSize:responsive.fontSize(12),
         fontWeight:500
     }
 });

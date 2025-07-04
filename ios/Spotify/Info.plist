@@ -73,6 +73,7 @@
 		<array>
 			<string>spotifyapp</string>
 		</array>
+		
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
