@@ -8,6 +8,7 @@ import TrackPlayer, { useProgress, State } from "react-native-track-player";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import MarqueeText from 'react-native-marquee'
+import responsive from "../until/responsive";
 function PlayTrackScreen({route})
 {
     const [showTitle,setShowtTitle] = useState();
@@ -68,8 +69,6 @@ function PlayTrackScreen({route})
     async function playNextSong() {
 
         try {
-           
-            
             await TrackPlayer.skipToNext();
             await TrackPlayer.play();
             let trackIndex = await TrackPlayer.getCurrentTrack();
@@ -94,14 +93,13 @@ function PlayTrackScreen({route})
                     {/* <Text style={styles.songsName} >{showTitle} </Text> */}
                     <MarqueeText style={styles.songsName} speed={0.5} marqueeOnStart={true} loop={true} delay={2000}>{showTitle}</MarqueeText>
                     <Text style={styles.songArtist}>{tracks.artist}</Text>
-                    
                 </View>
                 <View style={styles.iconContainer}>
                     <Ionicon name="heart-outline" size={30} color="#ffffff" />
                 </View>
             </View>
             <View style={styles.track}>
-                 <Slider style={{width: '100%',height:30}}  value={progress.position}   onSlidingComplete={(val) => {TrackPlayer.seekTo(val)}} minimumValue={0} maximumValue={progress.duration} minimumTrackTintColor={Colors.Gray100} maximumTrackTintColor={Colors.White} thumbTintColor={Colors.Gray100} />
+                 <Slider style={{width: responsive.width(430),height:responsive.height(4)}}  value={progress.position}   onSlidingComplete={(val) => {TrackPlayer.seekTo(val)}} minimumValue={0} maximumValue={progress.duration} minimumTrackTintColor={Colors.Gray100} maximumTrackTintColor={Colors.White} thumbTintColor={Colors.Gray100} />
             </View>
             <View style={styles.playButton}>
                 <Ionicon name="play-skip-back" size={30} onPress={playPreviousSong} color="white"/>
@@ -122,16 +120,17 @@ const styles = StyleSheet.create({
         flex:1
     },
     mainContainer:{
-        padding:20,
-        flex:1
+        width:responsive.width(428),
+        hegiht:responsive.height(926)
     },
     imageTrack:{
-        width:'100%',
-        height:380
+        width:responsive.width(380),
+        height:responsive.height(380)
     },
     detailsContainer:{
         flexDirection:'row',
         paddingVertical:20,
+        paddingHorizontal:20,
         justifyContent:'space-between'
     },
     iconContainer:{
@@ -146,15 +145,19 @@ const styles = StyleSheet.create({
         paddingVertical:30
     },
     imageContainer:{
-        paddingVertical:50
+        paddingVertical:50,
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems:'center'
     },
     songsName:{
-        fontSize:22,
+        fontSize:responsive.fontSize(22),
         color:'#ffffff',
-        fontWeight:600
+        fontWeight:600,
+        width:responsive.width(300),
     },
     songArtist:{
-        fontSize:16,
+        fontSize:responsive.fontSize(16),
         color:Colors.Gray100
     },
     infoText:{
@@ -168,8 +171,8 @@ const styles = StyleSheet.create({
         gap:50
     },
     track:{
-        paddingBottom:30,
-        paddingTop:20
+        paddingBottom:40,
+        paddingTop:10
     },
     changeTrack:{
         width:22,
@@ -183,5 +186,9 @@ const styles = StyleSheet.create({
         padding:10,
         backgroundColor:'white',
         borderRadius:50
+    },
+    trackText:{
+        fontSize:responsive.fontSize(14),
+        color:'#ffffff'
     }
 });

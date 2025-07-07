@@ -31,7 +31,7 @@ const initialState = [
    {
     id: 4,
     url: require('../src/assets/songs/GetLow.mp3'),
-    title: 'DJ Snake And Dillon Francis x O2Srk.mp3',
+    title: 'I Want To Hold Hour Hand - Remastered 2015',
     artist: 'deadmau5',
     artwork: 'file:///storage/sdcard0/Downloads/cover.png',
     duration: 233,

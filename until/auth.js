@@ -48,14 +48,13 @@ export const fetchRecentlyPlayed = async ({accessToken}) => {
       height: item.track.album.images[1]?.height,
     }));
 
-   
-
       const uniqueTracksMap = new Map();
       allTracks.forEach(track => {
         if (!uniqueTracksMap.has(track.id)) {
           uniqueTracksMap.set(track.id, track);
         }
       });
+      
       const uniqueTracks = Array.from(uniqueTracksMap.values());
        console.log('Recently Played Tracks:', response.data);
     return  uniqueTracks;

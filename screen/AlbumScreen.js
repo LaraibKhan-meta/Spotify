@@ -12,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import TopHeader from "../component/TopHeader";
 import { play } from "react-native-track-player/lib/src/trackPlayer";
 import { opacity } from "react-native-reanimated/lib/typescript/Colors";
+import responsive from "../until/responsive";
 
 function AlbumScreen({ navigation }) {
 
@@ -43,7 +44,7 @@ function AlbumScreen({ navigation }) {
     const headerStyles = useAnimatedStyle(() => {
         const height = interpolate(scrollY.value, [0, 100, 200, 300], [200, 150, 100, 50], Extrapolation.CLAMP);
         const marginBottom = interpolate(scrollY.value, [0, 300], [20, 10], Extrapolation.CLAMP);
-        const marginTop = interpolate(scrollY.value, [0, 50, 100, 200, 300], [100, 10, 5, 0], Extrapolation.CLAMP);
+        const marginTop = interpolate(scrollY.value, [0, 50, 100, 200, 300], [30, 10, 5, 0], Extrapolation.CLAMP);
         return {
             height,
             marginBottom,
@@ -90,10 +91,8 @@ function AlbumScreen({ navigation }) {
               
                 <TopHeader style={topHeaderVisibleStyles} textStyle={textVisibleStyles}>1Remastered</TopHeader>
                 
-                <Animated.ScrollView onScroll={scrollHandler} stickyHeaderIndices={[0]} scrollEventThrottle={16} showsVerticalScrollIndicator={false} style={{ flex: 1 }}   >
-                     <View style={styles.fixedPlayIcon}>
-                        <Ionicon name="pause-circle-sharp" size={56} color="#1DB954" style={{zIndex:999}}/>
-                    </View>
+                <Animated.ScrollView onScroll={scrollHandler}  showsVerticalScrollIndicator={false}  >
+                    
                         <Animated.View style={[styles.imageContainer, headerStyles]}>
                             <Animated.Image source={images.AlbumImage} style={imageStyle} />
                         </Animated.View>
@@ -108,7 +107,7 @@ function AlbumScreen({ navigation }) {
                                     <Text style={styles.artistName}>The Beatles</Text>
                                 </View>
                                 <View style={styles.subAlbumText}>
-                                    <Text>Album .2020</Text>
+                                    <Text style={styles.albumTextSize}>Album .2020</Text>
                                     <View style={styles.iconBtn}>
                                         <Ionicon name="heart-outline" size={25} color="#FFFFFF"></Ionicon>
                                         <Ionicon name="arrow-down-circle-sharp" size={25} color="#1DB954"></Ionicon>
@@ -122,7 +121,7 @@ function AlbumScreen({ navigation }) {
                         </View>
                    
                         <View style={styles.listSongs}>
-                            <FlatList data={tracks} keyExtractor={item => item.id} renderItem={renderPlaylist} />
+                            <FlatList data={tracks} keyExtractor={item => item.id} renderItem={renderPlaylist}  />
                         </View>  
              
                     
@@ -156,7 +155,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
     },
     text: {
-        fontSize: 25,
+        fontSize: responsive.fontSize(25),
         fontWeight: 500,
         color: '#ffffff'
     },
@@ -196,15 +195,17 @@ const styles = StyleSheet.create({
         gap: 22
     },
     listItem: {
-        paddingHorizontal: 20,
-        paddingBottom: 20
+        paddingBottom: 20,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
     },
     listSongs: {
         paddingTop: 20,
-        flex: 1,
     },
     linearGradient: {
-        flex: 1,
+        width:responsive.width(428),
+        height:responsive.height(926)
     },
     fixedPlayIcon: {
     position: 'relative',
@@ -213,6 +214,9 @@ const styles = StyleSheet.create({
     left: 340,
     bottom: 0,
     zIndex: 2000,
-},
-
+    },
+    albumTextSize:{
+        fontSize:responsive.fontSize(13),
+        color:'#B3B3B3'
+    }
 });

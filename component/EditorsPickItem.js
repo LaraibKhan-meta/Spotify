@@ -13,7 +13,6 @@ function EditorsPickItem({id,name,image})
        </Pressable>
     )
 }
-
 export default EditorsPickItem;
 
 const styles = StyleSheet.create({

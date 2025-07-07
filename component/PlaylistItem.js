@@ -2,6 +2,7 @@ import { Children } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Ionicon from 'react-native-vector-icons/Ionicons'
 import { Colors } from "../constant/colors";
+import responsive from "../until/responsive";
 function PlaylistItem({id,name,artist,onPress})
 {
     console.log(onPress);
@@ -15,7 +16,7 @@ function PlaylistItem({id,name,artist,onPress})
                 </View>
             </View>
             <View>
-                 <Ionicon name="ellipsis-horizontal-sharp" size={27} color="white"/>
+                 <Ionicon name="ellipsis-horizontal-sharp" style={{width:responsive.width(27),height:responsive.height(27)}} color="white"/>
             </View>
         </Pressable>
     )
@@ -26,23 +27,26 @@ export default PlaylistItem;
 const styles = StyleSheet.create({
 
     mainContainer:{
-        flex:1,
+        width:responsive.width(406),
+        height:responsive.height(58),
         flexDirection:'row',
         justifyContent:'space-between',
-        alignItems:'center'
+        alignItems:'center',
+        paddingHorizontal:10
     },
     listContainer:{
         flexDirection:'column',
         justifyContent:'flex-start'
     },
     text:{
-        fontSize:17,
+        fontSize:responsive.fontSize(17),
         fontWeight:500,
         color:'#ffffff',
         paddingVertical:5
     },
     textArt:{
-        color:'white'
+        color:'#B3B3b3',
+        fontSize:responsive.fontSize(14),
     },
     artistContainer:{
         flexDirection:'row',
