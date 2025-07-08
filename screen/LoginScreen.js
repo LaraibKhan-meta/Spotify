@@ -2,7 +2,7 @@ import { Image, StyleSheet, View, Text, Button, ScrollView } from "react-native"
 import SocialButton from "../component/Ui/SocialButton";
 import { images } from "../constant/Images";
 import ThemeColor from "../component/ThemeColor";
-import { spotifyLogin } from "../until/auth";
+import { handleOpenInAppBrowser, spotifyLogin } from "../until/auth";
 import { useDispatch } from "react-redux";
 import MainContainer from "../component/MainContainer";
 import responsive from "../until/responsive";
@@ -34,7 +34,7 @@ function LoginScreen({ navigation }) {
                         <SocialButton image={images.Google} onPress={handleLogin}>Continue with Google</SocialButton>
                         <SocialButton image={images.facebook}>Continue with facebook</SocialButton>
                         <SocialButton image={images.ios}>Continue with Apple</SocialButton>
-                        <SocialButton mode="Login" onPress={handleLogin}>Login</SocialButton>
+                        <SocialButton mode="Login" onPress={handleOpenInAppBrowser}>Login</SocialButton>
                     </View>
                 </View>
             </ScrollView>
