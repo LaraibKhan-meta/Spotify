@@ -7,24 +7,41 @@ import { Colors } from "../constant/colors";
 import EditorsPickItem from "../component/EditorsPickItem";
 import ThemeColor from "../component/ThemeColor";
 import BottomPlayer from "../component/BottomPlayer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchRecentlyPlayed } from "../until/auth";
 import { useEffect, useState } from "react";
 import responsive from "../until/responsive";
-
+import { setAccessToken } from "../redux/authToken";
+import BottomTabs from "../Navigation/ScreensNavigation";
 function HomeScreen({ navigation }) {
     const [recentTracks, setRecentTracks] = useState([]);
-    const gettoken = useSelector((state) => state.auth.accessToken);
-    console.log('authToken', gettoken);
+    const {accessToken} = useSelector((state) => state.auth.accessToken);
+    console.log("GET TOKEN",accessToken)
+    const {expiresIn, timestamp } = useSelector(state => state.auth);
+    // console.log('authToken', gettoken);
+    const dispatch = useDispatch();
+
     useEffect(() => {
         const loadData = async () => {
-            const track = await fetchRecentlyPlayed({ accessToken: gettoken });
-            setRecentTracks(track);
-        }
-        if (gettoken) {
+            const isTokenExpired = () => {
+            if (!timestamp || !expiresIn) return true;
+            return Date.now() - timestamp > expiresIn * 1000;
+            }; 
+
+            if (isTokenExpired()) {
+            console.log('Access token expired, logging out...');
+            dispatch(setAccessToken({ accessToken: null, expiresIn: null, timestamp: null }));
+            navigation.replace('Login');
+            return;
+            }
+            const tracks = await fetchRecentlyPlayed({ accessToken:accessToken });
+            setRecentTracks(tracks);
+        };
+
+        if (accessToken) {
             loadData();
         }
-    }, [gettoken])
+        }, [accessToken]);
 
     function renderRecentlyPlayedList(itemData) {
         const item = itemData.item;

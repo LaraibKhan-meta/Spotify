@@ -6,6 +6,7 @@ import { handleOpenInAppBrowser, spotifyLogin } from "../until/auth";
 import { useDispatch } from "react-redux";
 import MainContainer from "../component/MainContainer";
 import responsive from "../until/responsive";
+import { setAccessToken } from "../redux/authToken";
 
 function LoginScreen({ navigation }) {
     const dispatch = useDispatch();
@@ -13,9 +14,23 @@ function LoginScreen({ navigation }) {
     function navigateSignupScreen() {
         navigation.navigate("Signup");
     }
-    const handleLogin = () => {
-        spotifyLogin({ navigation, dispatch });
-
+    const handleLogin = async () => {
+        // spotifyLogin({ navigation, dispatch });
+         try {
+            const res = await handleOpenInAppBrowser();
+            if (res?.access_token) {
+                console.log("Get Access Token:", res.access_token);
+                dispatch(setAccessToken({
+                    accessToken: res.access_token,
+                    expiresIn: res.expires_in,
+                    timestamp: Date.now()
+                }));
+            } else {
+                console.log("Can't get access token");
+            }
+            } catch (error) {
+            console.error('Login flow failed', error);
+            }
     }
     return (
         <ThemeColor>
@@ -34,7 +49,7 @@ function LoginScreen({ navigation }) {
                         <SocialButton image={images.Google} onPress={handleLogin}>Continue with Google</SocialButton>
                         <SocialButton image={images.facebook}>Continue with facebook</SocialButton>
                         <SocialButton image={images.ios}>Continue with Apple</SocialButton>
-                        <SocialButton mode="Login" onPress={handleOpenInAppBrowser}>Login</SocialButton>
+                        <SocialButton mode="Login" onPress={handleLogin}>Login</SocialButton>
                     </View>
                 </View>
             </ScrollView>

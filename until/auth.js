@@ -6,12 +6,15 @@ import App from '../App';
  const clientId='fae0936a402146688b9c322f225612a5';
  const clientSecret= '253aa54523f24feb9a7c19e569467a2c';
  const redirectURi = 'spotifyapp://callback';
-//  const scopes = ['user-read-email', 'user-read-private', 'user-read-recently-played'];
+const scopes = ['user-read-email', 'user-read-private', 'user-read-recently-played'];
 
 
-// for code
+
+
+// // for code
 export const handleOpenInAppBrowser = async () => {
-  const scopes = encodeURIComponent('user-read-email user-read-private user-read-recently-played');
+  // const scopes = encodeURIComponent('user-read-email user-read-private user-read-recently-played');
+  
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectURi}&scope=${scopes}&response_type=code`;
   console.log("Access Url");
   try {
@@ -20,38 +23,52 @@ export const handleOpenInAppBrowser = async () => {
     if (response.type === 'success' && response.url) {
       const code = response.url.match(/[\\?&]code=([^&]*)/)[1];
       console.log('Authorization Code:', code);
-      
+       if (code) {
+        const res = await getAccessToken(code);
+        console.log("GET ACCESS TOKEN",res);
+        return res;
+      }
+     
     }
   } catch (error) {
     console.error('Error opening InAppBrowser:', error);
   }
 };
 
+export const getAccessToken = async code => {
+  const params = new URLSearchParams();
+  params.append('grant_type', 'authorization_code');
+  params.append('code', code);
+  params.append('redirect_uri', redirectURi);
 
-const getSpotifyAccessToken = async () => {
-            const authaccessToken = `${clientId}:${clientSecret}`;
-            const accessToken = btoa(authaccessToken);
-            
+  const authString = `${clientId}:${clientSecret}`;
+  const encodedAuth = btoa(authString);
 
-            try {
-                const response = await axios.post('https://accounts.spotify.com/api/token',
-                    'grant_type=client_credentials',
-                    {
-                        headers: {
-                            'Authorization': `Basic ${accessToken}`,
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        }
-                    }
-                );
-                return response.data.access_token;
-                
-            } catch (error) {
-                console.error("Error receiving Spotify API access token", error);
-                return null;
-            }
-        };
+  try {
+    const result = await axios.post(
+      'https://accounts.spotify.com/api/token',
+      params.toString(),
+      {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${encodedAuth}`,
+        },
+      },
+    );
+    return result.data;
+  } catch (error) {
+    console.log('Spotify login failed', error.response?.data);
+  }
+};
 
-         
+const isTokenExpired = () => {
+  if (!timestamp || !expiresIn) return true;
+  const now = Date.now();
+  return now - timestamp > expiresIn * 1000;
+};
+
+
+        
  
  // for token
 // export const handleOpenInAppBrowser = async () => {
@@ -96,6 +113,7 @@ const getSpotifyAccessToken = async () => {
 // };
 
 export const fetchRecentlyPlayed = async ({accessToken}) => {
+  console.log("Fetch Access Token",accessToken);
   try {
     const response = await axios.get(
       'https://api.spotify.com/v1/me/player/recently-played',
