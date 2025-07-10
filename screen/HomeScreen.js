@@ -1,4 +1,4 @@
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, Image, Modal, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { EditorPicks, RecentlyPlayed } from "../model/DummyData";
@@ -12,36 +12,37 @@ import { fetchRecentlyPlayed } from "../until/auth";
 import { useEffect, useState } from "react";
 import responsive from "../until/responsive";
 import { setAccessToken } from "../redux/authToken";
-import BottomTabs from "../Navigation/ScreensNavigation";
+
 function HomeScreen({ navigation }) {
     const [recentTracks, setRecentTracks] = useState([]);
-    const {accessToken} = useSelector((state) => state.auth.accessToken);
-    console.log("GET TOKEN",accessToken)
-    const {expiresIn, timestamp } = useSelector(state => state.auth);
+    const [modalVisible, setModalVisible] = useState(false);
+    const { accessToken } = useSelector((state) => state.auth.accessToken);
+    console.log("GET TOKEN", accessToken)
+    const { expiresIn, timestamp } = useSelector(state => state.auth);
     // console.log('authToken', gettoken);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const loadData = async () => {
             const isTokenExpired = () => {
-            if (!timestamp || !expiresIn) return true;
-            return Date.now() - timestamp > expiresIn * 1000;
-            }; 
+                if (!timestamp || !expiresIn) return true;
+                return Date.now() - timestamp > expiresIn * 1000;
+            };
 
             if (isTokenExpired()) {
-            console.log('Access token expired, logging out...');
-            dispatch(setAccessToken({ accessToken: null, expiresIn: null, timestamp: null }));
-            navigation.replace('Login');
-            return;
+                console.log('Access token expired, logging out...');
+                dispatch(setAccessToken({ accessToken: null, expiresIn: null, timestamp: null }));
+                navigation.replace('Login');
+                return;
             }
-            const tracks = await fetchRecentlyPlayed({ accessToken:accessToken });
+            const tracks = await fetchRecentlyPlayed({ accessToken: accessToken });
             setRecentTracks(tracks);
         };
 
         if (accessToken) {
             loadData();
         }
-        }, [accessToken]);
+    }, [accessToken]);
 
     function renderRecentlyPlayedList(itemData) {
         const item = itemData.item;
@@ -69,49 +70,82 @@ function HomeScreen({ navigation }) {
         navigation.navigate('Album');
     }
     return (
-        <ThemeColor>
-            <ScrollView>
-                <View style={styles.mainContainer}>
-                    <View style={styles.topHeader}>
-                        <Text style={styles.recentlyText}>Recently played</Text>
-                        <View style={styles.topIconContainer}>
-                            <Ionicons name="notifications-outline" size={22} color="#ffffff" />
-                            <MaterialIcons name="history" size={22} color="#ffffff" />
-                            <Ionicons name="settings-outline" size={22} color="#ffffff" />
-                        </View>
-                    </View>
-                    <View style={styles.mainListContainer}>
-                        <FlatList data={recentTracks} horizontal keyExtractor={(item) => item.id} renderItem={renderRecentlyPlayedList} showsHorizontalScrollIndicator={false} />
-                    </View>
-                    <View style={styles.reviewConatiner}>
-                        <Image source={require('../src/assets/images/review.png')} style={styles.imageReview} />
-                        <View style={styles.textReviewContainer}>
-                            <Text style={styles.textHash}>#SPOTIFYWRAPPED</Text>
-                            <Text style={styles.reviewText}>Your 2021 in review</Text>
-                        </View>
-                    </View>
-                    <View style={styles.topSongsContainer}>
-                        <View style={styles.songsItemContainer}>
-                            <Image source={require('../src/assets/Artist/topSong.jpg')} style={styles.songsItemImage} />
-                            <Text style={styles.songsItemText}>Your Top Songs 2021</Text>
-                        </View>
-                        <View style={styles.songsItemContainer}>
-                            <Image source={require('../src/assets/Artist/artist.jpg')} style={styles.songsItemImage} />
-                            <Text style={styles.songsItemText}>Your Artists Revealed</Text>
-                        </View>
-                    </View>
-                    <View>
-                        <View style={styles.editorsPickContainer}>
-                            <Text style={styles.editorsText}>Editor's picks</Text>
-                        </View>
-                        <View style={styles.editorSongsContainer}>
-                            <FlatList data={EditorPicks} horizontal keyExtractor={(item) => item.id} renderItem={renderEditorPickList} showsHorizontalScrollIndicator={false} />
+        <>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                }}>
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>Are you sure you want to logout?</Text>
+                        <Text style={styles.modalSubText}>Your current session will be closed.</Text>
+                        <View style={styles.inlineAction}> 
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={[styles.textStyle,styles.closedText]}>Close</Text>
+                        </Pressable>
+                        <Pressable
+                            style={[styles.button, styles.buttonOpen]}
+                            onPress={() => setModalVisible(!modalVisible)}>
+                            <Text style={styles.textStyle}>Logout</Text>
+                        </Pressable>
                         </View>
                     </View>
                 </View>
-            </ScrollView>
-            <BottomPlayer onPress={renderToPlayerScreen} />
-        </ThemeColor>
+            </Modal>
+            <ThemeColor>
+                <ScrollView>
+                    <View style={styles.mainContainer}>
+                        <View style={styles.topHeader}>
+                            <Text style={styles.recentlyText}>Recently played</Text>
+                            <View style={styles.topIconContainer}>
+                                <Ionicons name="notifications-outline" size={22} color="#ffffff" />
+                                <MaterialIcons name="history" size={22} color="#ffffff" />
+                                <Ionicons name="settings-outline" size={22} color="#ffffff" />
+                                <Pressable onPress={() => setModalVisible(true)}>
+                                    <Ionicons name="power-sharp" size={22} color="#ffffff" />
+                                </Pressable>
+                            </View>
+                        </View>
+                        <View style={styles.mainListContainer}>
+                            <FlatList data={recentTracks} horizontal keyExtractor={(item) => item.id} renderItem={renderRecentlyPlayedList} showsHorizontalScrollIndicator={false} />
+                        </View>
+                        <View style={styles.reviewConatiner}>
+                            <Image source={require('../src/assets/images/review.png')} style={styles.imageReview} />
+                            <View style={styles.textReviewContainer}>
+                                <Text style={styles.textHash}>#SPOTIFYWRAPPED</Text>
+                                <Text style={styles.reviewText}>Your 2021 in review</Text>
+                            </View>
+                        </View>
+                        <View style={styles.topSongsContainer}>
+                            <View style={styles.songsItemContainer}>
+                                <Image source={require('../src/assets/Artist/topSong.jpg')} style={styles.songsItemImage} />
+                                <Text style={styles.songsItemText}>Your Top Songs 2021</Text>
+                            </View>
+                            <View style={styles.songsItemContainer}>
+                                <Image source={require('../src/assets/Artist/artist.jpg')} style={styles.songsItemImage} />
+                                <Text style={styles.songsItemText}>Your Artists Revealed</Text>
+                            </View>
+                        </View>
+                        <View>
+                            <View style={styles.editorsPickContainer}>
+                                <Text style={styles.editorsText}>Editor's picks</Text>
+                            </View>
+                            <View style={styles.editorSongsContainer}>
+                                <FlatList data={EditorPicks} horizontal keyExtractor={(item) => item.id} renderItem={renderEditorPickList} showsHorizontalScrollIndicator={false} />
+                            </View>
+                        </View>
+                    </View>
+                </ScrollView>
+                <BottomPlayer onPress={renderToPlayerScreen} />
+            </ThemeColor>
+
+        </>
     )
 }
 
@@ -215,5 +249,64 @@ const styles = StyleSheet.create({
     editorSongsContainer: {
         marginTop: 10,
         paddingLeft: 10
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'flex-start',
+        top:30
+    },
+    modalView: {
+        margin: 30,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        width:responsive.width(100),
+        padding:10,
+        elevation: 2,
+    },
+    buttonOpen: {
+        backgroundColor: Colors.Gray200,
+    },
+    buttonClose: {
+        backgroundColor: '#ffffff',
+        borderWidth:2,
+        borderColor:Colors.Gray200,
+    },
+    textStyle: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        textAlign: 'center',
+        fontSize:responsive.fontSize(18),
+        fontWeight:'600'
+    },
+    modalSubText:{
+        fontSize:responsive.fontSize(15),
+        fontWeight:'500',
+        top:5
+    },
+    inlineAction:{
+        flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'flex-start',
+        gap:20,
+        marginTop:30
+    },
+    closedText:{
+        color:Colors.Gray200,
     }
 });

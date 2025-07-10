@@ -12,14 +12,22 @@ function AppNavigation()
     const  {accessToken} = useSelector((state) => state.auth);
     console.log("Access Token before Login",accessToken);
 
-      useEffect(() => {
-        async function TrackPlayerSetup()
-        {
-           await TrackPlayer.setupPlayer();
-           console.log('setup Succesfully installed');
+    useEffect(() => {
+
+        const init = async () => {
+            async function TrackPlayerSetup() {
+                await TrackPlayer.setupPlayer();
+                console.log('setup Succesfully installed');
+            }
+            TrackPlayerSetup();
+
+            await BootSplash.hide({ fade: true });
+            console.log("BootSplash has been hidden successfully");
         }
-        TrackPlayerSetup();
-      },[]) 
+
+        init()
+
+    }, []); 
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
