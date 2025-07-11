@@ -3,32 +3,32 @@ import {setAccessToken} from '../redux/authToken';
 import InAppBrowser from 'react-native-inappbrowser-reborn';
 import App from '../App';
 
- const clientId='fae0936a402146688b9c322f225612a5';
- const clientSecret= '253aa54523f24feb9a7c19e569467a2c';
- const redirectURi = 'spotifyapp://callback';
-const scopes = ['user-read-email', 'user-read-private', 'user-read-recently-played'];
-
-
-
+const clientId = 'fae0936a402146688b9c322f225612a5';
+const clientSecret = '253aa54523f24feb9a7c19e569467a2c';
+const redirectURi = 'spotifyapp://callback';
+const scopes = [
+  'user-read-email',
+  'user-read-private',
+  'user-read-recently-played',
+];
 
 // // for code
 export const handleOpenInAppBrowser = async () => {
   // const scopes = encodeURIComponent('user-read-email user-read-private user-read-recently-played');
-  
+
   const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectURi}&scope=${scopes}&response_type=code`;
-  console.log("Access Url");
+  console.log('Access Url');
   try {
     const response = await InAppBrowser.openAuth(authUrl, redirectURi, {});
     console.log(response);
     if (response.type === 'success' && response.url) {
       const code = response.url.match(/[\\?&]code=([^&]*)/)[1];
       console.log('Authorization Code:', code);
-       if (code) {
+      if (code) {
         const res = await getAccessToken(code);
-        console.log("GET ACCESS TOKEN",res);
+        console.log('GET ACCESS TOKEN', res);
         return res;
       }
-     
     }
   } catch (error) {
     console.error('Error opening InAppBrowser:', error);
@@ -67,12 +67,9 @@ const isTokenExpired = () => {
   return now - timestamp > expiresIn * 1000;
 };
 
-
-        
- 
- // for token
+// for token
 // export const handleOpenInAppBrowser = async () => {
-//     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectURi}&scope=${scopes}&response_type=token`; 
+//     const authUrl = `https://accounts.spotify.com/authorize?client_id=${clientId}&redirect_uri=${redirectURi}&scope=${scopes}&response_type=token`;
 //     try {
 //       const response = await InAppBrowser.openAuth(authUrl, redirectURi, {});
 //       console.log(response)
@@ -113,7 +110,7 @@ const isTokenExpired = () => {
 // };
 
 export const fetchRecentlyPlayed = async ({accessToken}) => {
-  console.log("Fetch Access Token",accessToken);
+  console.log('Fetch Access Token', accessToken);
   try {
     const response = await axios.get(
       'https://api.spotify.com/v1/me/player/recently-played',
@@ -132,16 +129,16 @@ export const fetchRecentlyPlayed = async ({accessToken}) => {
       height: item.track.album.images[1]?.height,
     }));
 
-      const uniqueTracksMap = new Map();
-      allTracks.forEach(track => {
-        if (!uniqueTracksMap.has(track.id)) {
-          uniqueTracksMap.set(track.id, track);
-        }
-      });
-      
-      const uniqueTracks = Array.from(uniqueTracksMap.values());
-       console.log('Recently Played Tracks:', response.data);
-    return  uniqueTracks;
+    const uniqueTracksMap = new Map();
+    allTracks.forEach(track => {
+      if (!uniqueTracksMap.has(track.id)) {
+        uniqueTracksMap.set(track.id, track);
+      }
+    });
+
+    const uniqueTracks = Array.from(uniqueTracksMap.values());
+    console.log('Recently Played Tracks:', response.data);
+    return uniqueTracks;
   } catch (error) {
     if (error.response) {
       console.error(
