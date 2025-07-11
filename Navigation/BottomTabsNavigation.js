@@ -18,6 +18,7 @@ function BottomTabsNavigation() {
           height:responsive.height(70),        
         },
         tabBarActiveTintColor: '#ffffff',
+        
       }} initialRouteName="Home"
     >
       <Bottom.Screen name="Home" component={HomeScreen} options={{ tabBarLabel: 'Home', tabBarIcon: ({ color, size }) => (<Ionicons name="home" size={size} color={color} />), tabBarLabelStyle: { fontSize: 12 } }} />

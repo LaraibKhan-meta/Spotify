@@ -12,29 +12,31 @@ import { fetchRecentlyPlayed } from "../until/auth";
 import { useEffect, useState } from "react";
 import responsive from "../until/responsive";
 import { setAccessToken } from "../redux/authToken";
+import { persistor } from "../redux/store";
 
 function HomeScreen({ navigation }) {
     const [recentTracks, setRecentTracks] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+
     const { accessToken } = useSelector((state) => state.auth.accessToken);
     console.log("GET TOKEN", accessToken)
     const { expiresIn, timestamp } = useSelector(state => state.auth);
-    // console.log('authToken', gettoken);
+    console.log('expiresIN', expiresIn);
     const dispatch = useDispatch();
 
     useEffect(() => {
         const loadData = async () => {
-            const isTokenExpired = () => {
-                if (!timestamp || !expiresIn) return true;
-                return Date.now() - timestamp > expiresIn * 1000;
-            };
+            // const isTokenExpired = () => {
+            //     if (!timestamp || !expiresIn) return true;
+            //     return Date.now() - timestamp > expiresIn * 1000;
+            // };
 
-            if (isTokenExpired()) {
-                console.log('Access token expired, logging out...');
-                dispatch(setAccessToken({ accessToken: null, expiresIn: null, timestamp: null }));
-                navigation.replace('Login');
-                return;
-            }
+            // if (isTokenExpired()) {
+            //     console.log('Access token expired, logging out...');
+            //     dispatch(setAccessToken({ accessToken: null, expiresIn: null, timestamp: null }));
+            //     navigation.replace('Login');
+            //     return;
+            // }
             const tracks = await fetchRecentlyPlayed({ accessToken: accessToken });
             setRecentTracks(tracks);
         };
@@ -69,6 +71,11 @@ function HomeScreen({ navigation }) {
     function renderToPlayerScreen() {
         navigation.navigate('Album');
     }
+    function LogoutHandler()
+    {
+        dispatch({ type: 'Logout' });
+        persistor.purge();
+    }
     return (
         <>
             <Modal
@@ -91,7 +98,7 @@ function HomeScreen({ navigation }) {
                         </Pressable>
                         <Pressable
                             style={[styles.button, styles.buttonOpen]}
-                            onPress={() => setModalVisible(!modalVisible)}>
+                            onPress={LogoutHandler}>
                             <Text style={styles.textStyle}>Logout</Text>
                         </Pressable>
                         </View>
